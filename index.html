@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Log Files</title>
+    <style>
+        /* Center the content */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: white;
+}
+
+/* Style the form container */
+form {
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+/* Style the form title */
+h1 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+/* Style the file input */
+input[type="file"] {
+    display: block;
+    margin-bottom: 50px;
+}
+
+/* Style the submit button */
+button[type="submit"] {
+    padding: 10px 120px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+
+    </style>
+</head>
+
+<body>
+    <h1>Upload Log Files </h1>
+    <form action="/parse_logs" method="post" enctype="multipart/form-data">
+        <input type="file" name="log_files" accept=".log" multiple>
+        <button type="submit">Upload</button>
+    </form>
+</body>
+
+</html>

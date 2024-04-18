@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Parsing Result</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Log Parsing Result</h1>
+<!-- 
+    {% if pie_chart %}
+    <h2>Common Patterns Pie Chart</h2>
+    <img src="data:image/png;base64,{{ pie_chart }}" alt="Common Patterns Pie Chart">
+    {% endif %} -->
+      <h2>Common Patterns:</h2>
+        <ul>
+            {% for message, count in common_patterns.items() %}
+            <li>{{ message }} - {{ count }}</li>
+            {% endfor %}
+        </ul>
+        <h2>Potential Anomalies:</h2>
+        <ul>
+            {% for anomaly in anomalies %}
+            <li>{{ anomaly.message }} - {{ anomaly.count }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Identified Failures:</h2>
+        <ul>
+            {% for failure in failures %}
+            <li>{{ failure.message }} - {{ failure.count }}</li>
+            {% endfor %}
+        </ul>
+
+        {% if repeated_errors %}
+        <div class="alert alert-danger" role="alert">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Error Message</th>
+                        <th>Timestamp</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for error in repeated_errors|sort(attribute='timestamp') %}
+                    <tr>
+                        <td>{{ error.message }}</td>
+                        <td>{{ error.timestamp }}</td>
+                        <td>{{ error.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <h2>Root Cause:</h2>
+        <p>{{ root_cause }}</p>
+
+        <input id="searchBox" type="text" placeholder="Search Table">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Month/Day/Time</th>
+                    <th>Hostname</th>
+                    <th>Component</th>
+                    <th>Subsystem</th>
+                    <th>PID</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in parsed_logs %}
+                <tr>
+                    <td>{{ log.month_day_time }}</td>
+                    <td>{{ log.hostname }}</td>
+                    <td>{{ log.component }}</td>
+                    <td>{{ log.subsystem }}</td>
+                    <td>{{ log.pid }}</td>
+                    <td>{{ log.message }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <form id="reportForm" action="/query" method="post">
+            <label for="reportFormat">Select report format:</label>
+            <select id="reportFormat" name="reportFormat">
+                <option value="pdf">PDF</option>
+                <option value="excel">Excel</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Generate Report</button>
+        </form>
+        <a href="/" id="backLink">Back to Upload</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#searchBox").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("table tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
